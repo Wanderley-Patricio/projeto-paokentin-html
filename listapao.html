@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Pães</title>
+    <link rel="stylesheet" href="estilo.css">
+</head>
+
+<body>
+    <a href="index.html"><h2>Home</h2></a>
+    <h1>Lista de Pães</h1>
+    <table id="tabela">
+        <tr>
+            <th>Código</th>
+            <th>Pão</th>
+            <th>Descrição</th>
+            <th>Tempo para assar</th>
+            <th>Ações</th>
+        </tr>
+    </table>
+
+    <script>
+        fetch('http://localhost:8080/pao')
+            .then(response => response.text())
+            .then(data => {
+                let paes = JSON.parse(data)
+                let tabela = document.getElementById('tabela')
+                for (let p of paes) {
+                    let l = document.createElement("tr")
+                    let tdCodigo = document.createElement("td")
+                    let tdPao = document.createElement("td")
+                    let tdDescricao = document.createElement("td")
+                    let tdTempoAssar = document.createElement("td")
+                    let tdAcoes = document.createElement("td")
+                    tdCodigo.innerHTML = p.codigo
+                    tdPao.innerHTML = p.nome
+                    tdDescricao.innerHTML = p.descricao
+                    tdTempoAssar.innerHTML = p.tempoAssar + ' minutos'
+                    tdAcoes.innerHTML = `<a href="atualizarpao.html?codigo=${p.codigo}">atualizar</a> <a href="#" onclick="deletarPao(${p.codigo})">deletar</a>`
+                    l.appendChild(tdCodigo)
+                    l.appendChild(tdPao)
+                    l.appendChild(tdDescricao)
+                    l.appendChild(tdTempoAssar)
+                    l.appendChild(tdAcoes)
+                    tabela.appendChild(l)
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        
+        function deletarPao(codigo) {
+            fetch('http://localhost:8080/pao/' + codigo, {method: 'DELETE'})
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+            location.reload()
+        }
+    </script>
+</body>
+
+</html>

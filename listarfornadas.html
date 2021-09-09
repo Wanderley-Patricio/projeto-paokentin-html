@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fornadas</title>
+    <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+    <a href="index.html"><h2>Home</h2></a>
+    <div id="mostrarFornadas"></div>
+    
+    <script>
+        fetch('http://localhost:8080/fornada/pao')
+            .then(response => response.text())
+            .then(data => {
+                let fornadas = JSON.parse(data)
+                let elementoFornadas = document.getElementById('mostrarFornadas')
+                if (elementoFornadas === undefined || elementoFornadas === null) {
+                    return
+                }
+                let h1 = document.createElement('h1')
+                h1.innerHTML = 'Fornadas'
+                elementoFornadas.appendChild(h1)
+
+                let tabela = document.createElement('table')
+                elementoFornadas.appendChild(tabela)
+
+                let l1 = document.createElement('tr')
+                tabela.appendChild(l1)
+
+                let thCodigo = document.createElement('th')
+                thCodigo.innerHTML = 'Código'
+                l1.appendChild(thCodigo)
+
+                let thPao = document.createElement('th')
+                thPao.innerHTML = 'Pão'
+                l1.appendChild(thPao)
+                
+                let thDescricao = document.createElement('th')
+                thDescricao.innerHTML = 'Descrição'
+                l1.appendChild(thDescricao)
+
+                let thTempo = document.createElement('th')
+                thTempo.innerHTML = 'Tempo'
+                l1.appendChild(thTempo)
+                
+                for (let f of fornadas) {
+                    let l = document.createElement("tr")
+                    let tdCodigo = document.createElement("td")
+                    let tdPao = document.createElement("td")
+                    let tdDescricao = document.createElement("td")
+                    let tdTempoAssar = document.createElement("td")
+                    tdCodigo.innerHTML = f.codigo
+                    tdPao.innerHTML = f.pao.nome
+                    tdDescricao.innerHTML = f.pao.descricao
+                    tdTempoAssar.innerHTML = tempoRestante(new Date(f.saida))
+                    l.appendChild(tdCodigo)
+                    l.appendChild(tdPao)
+                    l.appendChild(tdDescricao)
+                    l.appendChild(tdTempoAssar)
+                    tabela.appendChild(l)
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        
+        function tempoRestante(dataAlvo) {
+            var segundos = 1000;
+            var minutos = segundos * 60;
+            var horas = minutos * 60;
+            var dias = horas * 24;
+            var agora = new Date();
+            var diferencaTempo = dataAlvo - agora;
+            if (diferencaTempo < 0) {
+                return `${dataAlvo.getDate()}/${dataAlvo.getMonth() + 1}/${dataAlvo.getFullYear()} ${dataAlvo.toTimeString().substring(0,8)}`
+            }
+            var qtdDias = Math.floor(diferencaTempo / dias);
+            var qtdHoras = Math.floor((diferencaTempo % dias) / horas);
+            var qtdMinutos = Math.floor((diferencaTempo % horas) / minutos);
+            var qtdSegundos = Math.floor((diferencaTempo % minutos) / segundos);
+            let restante = ''
+            if (qtdDias > 0) {
+                restante += qtdDias + 'dias ';
+            }
+            restante += (qtdHoras < 10) ? '0' + qtdHoras + ':' : qtdHoras + ':';
+            restante += (qtdMinutos < 10) ? '0' + qtdMinutos + ':' : qtdMinutos + ':';
+            restante += (qtdSegundos < 10) ? '0' + qtdSegundos : qtdSegundos;
+            return restante
+        }
+    </script>
+</body>
+</html>

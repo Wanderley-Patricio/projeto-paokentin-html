@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atualizar Pão</title>
+    <link rel="stylesheet" href="estilo.css">
+</head>
+
+<body>
+    <a href="index.html"><h2>Home</h2></a>
+    <a href="listapao.html"><h3>Lista de Pães</h3></a>
+    <h1>Pão</h1>
+    Nome: <input type="text" name="nome" id="nome"/><br/>
+    Minutos para assar: <input type="number" name="tempoAssar" id="tempoAssar"/><br/>
+    Descrição: <textarea name="descricao" id="descricao" cols="30" rows="3"></textarea><br/><br/>
+    <button onclick="atualizar()">Atualizar</button>
+
+    <script>
+        var codigo = new URLSearchParams(window.location.search).get('codigo')
+        fetch('http://localhost:8080/pao/' + codigo)
+        .then(response => response.text())
+        .then(data => {
+            pao = JSON.parse(data)
+            document.getElementById('nome').value = pao.nome
+            document.getElementById('tempoAssar').value = pao.tempoAssar
+            document.getElementById('descricao').innerText = pao.descricao
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+
+        function atualizar() {
+            let paoAtualizado = {}
+            paoAtualizado.codigo = codigo
+            paoAtualizado.nome = document.getElementById('nome').value
+            paoAtualizado.descricao = document.getElementById('descricao').value
+            paoAtualizado.tempoAssar = document.getElementById('tempoAssar').value
+            if (!paoAtualizado.nome || !paoAtualizado.descricao || !paoAtualizado.tempoAssar) {
+                alert('Você precisa preencher todos os campos.')
+                return
+            }
+            let data = paoAtualizado;
+            fetch('http://localhost:8080/pao/', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.text())
+            .then(data => {
+                location.href = 'listapao.html'
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+
+</html>

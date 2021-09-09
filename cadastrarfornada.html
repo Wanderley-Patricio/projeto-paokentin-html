@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Fornada</title>
+    <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+    <a href="index.html"><h2>Home</h2></a>
+    <h1>Cadastrar Fornada</h1>
+    <div id="paes"></div>
+
+    <script>
+        let divPaes = document.getElementById('paes')
+
+        divPaes.innerHTML = ''
+
+        fetch('http://localhost:8080/pao')
+            .then(response => response.text())
+            .then(data => {
+                let paes = JSON.parse(data)
+                for (let p of paes) {
+                    adicionaBotao(p)
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+
+        function adicionaBotao(pao) {
+            let botao = document.createElement('button')
+            botao.className = 'botaopao'
+            botao.textContent = pao.nome
+            botao.onclick = () => cadastrarFornada(pao)
+            divPaes.appendChild(botao)
+        }
+
+        function cadastrarFornada(pao) {
+            let data = pao;
+            fetch('http://localhost:8080/fornada/pao/' + pao.codigo, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.text())
+            .then(data => {
+                location.href = 'listarfornadas.html'
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+body {
+    font-family: sans-serif;
+}
+table, td, th {
+    border: 1px solid black;
+}
+td, th {
+    padding: 0.3em;
+}
+.botaopao {
+    padding: 15px;
+    font-size: 1.5em;
+    background: blue;
+    border: 0;
+    box-shadow:0 10px 16px 0 rgba(0,0,0,0.2);
+    margin-right: 1em;
+    opacity: 0.6;
+    transition: 0.3s;
+    color: white;
+}
+.botaopao:hover {
+    opacity: 1;
+}

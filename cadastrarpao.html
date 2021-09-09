@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastrar Pão</title>
+    <link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+    <a href="index.html"><h2>Home</h2></a>
+    <h1>Cadastrar Pão</h1>
+    Nome: <input type="text" name="nome" id="nome"/><br/>
+    Minutos para assar: <input type="number" name="tempoAssar" id="tempoAssar" value="1"/><br/>
+    Descrição: <textarea name="descricao" id="descricao" cols="30" rows="3"></textarea><br/><br/>
+    <button onclick="cadastrar()">Cadastrar</button>
+
+    <script>
+        function cadastrar() {
+            let pao = {}
+            pao.nome = document.getElementById('nome').value
+            pao.descricao = document.getElementById('descricao').value
+            pao.tempoAssar = document.getElementById('tempoAssar').value
+            if (!pao.nome || !pao.descricao || !pao.tempoAssar) {
+                alert('Você precisa preencher todos os campos.')
+                return
+            }
+            
+            let data = pao;
+            fetch('http://localhost:8080/pao/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.text())
+            .then(data => {
+                location.href = 'listapao.html'
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+    
+</body>
+</html>
